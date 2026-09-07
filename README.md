@@ -19,8 +19,8 @@ This repository contains the complete design specifications, architectural white
    - **Section 8: Governance & Real Estate** (Corporate Tycoon vs. Civic Mayor, Town Planning Board UI, buying cities outright, ruin clean takeovers).
    - **Section 9: Multiplayer, Law & Threat Scaling** (Witness-based crime stat, Lawful Citizen vs. Pillager Outlaw faction flip, scaled Pillager threats & Kingpin arc, offline grief protection).
 
-2. [**Architecture & Mod Roadmap**](ROADMAP.md)
-   - Planned custom mod breakdown and engineering dependencies.
+2. [**Technical Milestones & Roadmap**](ROADMAP.md)
+   - Technical phases, simulation engine milestones, and pack release roadmap.
 
 ---
 
