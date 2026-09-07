@@ -154,6 +154,14 @@ Settlements build their own transit vehicles at specialized assembly plots:
   * *Cargo Freighters:* Flat-bottomed steam barges or sailing schooners hauling bulk goods along coastal lanes.
   * *Naval Warships:* Iron-prowed cutters equipped with **Create: Big Cannons** that patrol coastal waters to intercept pillager pirates.
 
+### H. Macro-to-Micro Simulation Handoff (The Observer Model)
+* **Off-Screen Logic (Pure Math):** Cities, construction projects, and trade routes do not tick in full 3D when unloaded. They update on a low-frequency data heartbeat (e.g., every 10–30 seconds) via simple arithmetic in the town ledger.
+* **The "Pre-Render Catch-Up" Sequence:** When a player crosses the simulation boundary toward a project:
+  1. *Timestamp Check:* Calculates elapsed work (e.g., 40 blocks paved, 3 trees felled).
+  2. *Voxel Committal:* Directly swaps the raw blocks in the chunk data *before* sending render packets to the player's client.
+  3. *Worker Positioning:* Spawns the physical villager entities directly at the current active work front (e.g., the Builder appears holding tools at block #41, not back at the warehouse).
+* **LOD World Updates:** Unloaded construction milestones (like a completed road stretch) write directly to the saved chunk data on disk and flag low-poly LOD terrain to update, allowing players to watch infrastructure expand across distant valleys through a spyglass.
+
 ---
 
 ## 5. WORKFORCE, CITIZEN LIFECYCLE & SOCIETY
@@ -290,12 +298,11 @@ Town inventories reflect their surrounding natural environment:
 * **The Freight & Contract Board UI:** Displays bulk shipping manifests between cities (e.g., *"Deliver 1,024 Oak Planks to High-Peak Foundry | Payout: 8 Emerald Blocks"*).
 * **The Civic & Town Hall UI:** Displays population, health, deficits, available plots for purchase, and the **[Purchase City Charter]** button.
 
-### D. Global Information & Maritime Infrastructure
-* **The Town Hall Mailbox:** A physical mailbox fixture outside every Town Hall. As long as a settlement is physically linked to others via a paved road, railway, or maritime route, the mailbox provides daily market telegraphs listing regional commodity shortages and freight contracts.
-* **Connecting Maritime Shipping Lanes:**
-  * Coastal ports establish connections by placing a **Harbor Master Pier** and an **Anchor Buoy** (beacon) at the harbor entrance.
-  * The engine verifies an unobstructed deep-water path between two harbor buoys across the ocean.
-  * Once validated, an official **Maritime Shipping Lane** is registered, allowing postal data, trade ships, and naval cutters to travel between island and continental ports.
+### D. Global Information & Maritime Shipping Lanes
+* **The Town Hall Mailbox:** A physical mailbox block outside the Town Hall. As long as a settlement is physically linked to others via road, rail, or sea, players can access daily regional telegrams, price fluctuations, and available shipping contracts.
+* **Deep-Water Maritime Corridors:**
+  * Coastal ports connect by placing an **Anchor Buoy** (floating beacon) at the harbor mouth.
+  * The engine verifies an unobstructed water path across the ocean to another harbor buoy, registering an official maritime shipping lane for cargo vessels and postal traffic.
 
 ---
 
@@ -316,10 +323,10 @@ Town inventories reflect their surrounding natural environment:
 * Any city can be purchased on the open market with Emerald Blocks.
 * **Dynamic Property Value:** A battered, raided town with depleted resources costs significantly fewer emeralds; a booming metropolis with full warehouses and active trade routes costs a massive fortune.
 
-### D. Abandoned Towns & Ruins
-* If all citizens in a settlement perish (via raids, monsters, or starvation), the city loses its sovereign claim.
-* The town becomes an overgrown, empty ruin (though wild beasts or wandering bandit patrols may roam nearby).
-* **The Clean Takeover:** Any player can walk into an unclaimed abandoned town, place a Charter Stone, and claim the entire settlement for free, inheriting all surviving roads, walls, and workshop buildings.
+### D. Settlement Failure & Abandoned Ruins
+* **The Open Claim Rule:** If all citizens in a town perish (via starvation, raids, or disease), the settlement loses its sovereign territory claim.
+* **No Squatter Bloat:** Pillagers do not move in as replacement citizens; the town simply becomes an overgrown, dark ruin.
+* **Free Takeover:** Any player can walk into an abandoned, unclaimed settlement, place a Charter Stone, and claim the remaining roads, workshops, and walls for free.
 
 ---
 
@@ -353,6 +360,13 @@ Town inventories reflect their surrounding natural environment:
   * *Protected Mode:* When a player is offline, blocks/containers in their claimed plot are completely un-interactable.
   * *Hardcore Mode:* Everything remains vulnerable 24/7; players rely purely on physical base design and guards.
 * **The Universal Decency Rule:** **Pillager attacks never trigger against an offline player's territory.**
+
+### E. Ambient Monsters & Off-Screen Combat Resolution
+* **Standard Hostile Mobs Remain:** Zombies, skeletons, spiders, and creepers remain in the world as the baseline night threat, justifying streetlights, torches along roads, and Town Watch patrols.
+* **Off-Screen Raid "Auto-Resolve":** When a Pillager attack occurs in an unloaded chunk, the engine runs a statistical comparison (`Attacking Threat Rating vs. Town Defense Rating`):
+  * Prevents server lag from spawning hundreds of unobserved AI combatants.
+  * *If the player arrives mid-battle:* Seamlessly transitions from the background calculation into physical 3D combat with active entities.
+  * *If the player arrives after the battle:* The engine commits battle scars (damaged barricades, looted crates) and queues emergency repairs in the Mayor's project list unless enough time has passed for it all to be fixed already of course.
 
 ---
 
