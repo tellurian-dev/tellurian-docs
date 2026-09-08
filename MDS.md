@@ -111,42 +111,77 @@ Before the player spawns, world generation executes a historical simulation step
 4. Connected trade corridors form between settlements to exchange deficits.
 5. **Day 1 Result:** The world contains grounded, modestly sized settlements connected by pre-established roads, bridges, and trade routes, with physical quarries showing exactly where their materials were harvested.
 
-### B. Deterministic 2D Plot Grid & Zoning
-* Settlements expand strictly along a **2D Grid of Plots** ($16 \times 16$ or $12 \times 12$ block cells) separated by wide road corridors, completely eliminating clipping or floating structures.
-* **Plot Types:**
-  * *Standard Plots:* Interior cells used for housing, workshops, bakeries, and municipal halls ($1 \times 1$, $1 \times 2$, or $2 \times 2$ footprints).
-  * *Environmental Anchor Plots:* Specialized plots that break strict alignment to snap directly to geographic terrain (e.g., a Fisherman's Pier snaps to deep water; a Watermill snaps flush to a riverbank with its wheel over the current).
-* **Harmonious Palette Algorithm:** Building templates dynamically substitute materials based on local resource abundance and color-harmony rules (e.g., birch and river cobble in valleys; sandstone and terracotta in deserts; spruce and deepslate in taigas).
+### B. Founding Anchor: The Civic Bell (The Settlement Bell)
+* **The Tactile Civic Heart:** Rejecting generic fantasy runestones, settlements are anchored by authentic historical civic infrastructure: **The Civic Bell**.
+* **Founding Ceremony:** 
+  * The Civic Bell is crafted from brass/copper, iron, and cut stone.
+  * When placed upon a timber post or stone plinth in an unclaimed territory, right-clicking strikes the bell.
+  * A deep, resonant brass chime tolls across the countryside, triggering the settlement inauguration interface: *"Inaugurate Settlement: Enter Town Name"*.
+* **Spatial Zero-Point:** The bell’s exact coordinate becomes **$(0, 0)$ of the settlement’s internal 2D grid**. The municipal ledger and town hall radiate directly from this origin.
 
-### C. Wide Surveyed Road Corridors (7–9 Block Right-of-Way)
-* **Future-Proof Allocation:** When a road is surveyed, a **7-to-9 block wide corridor** is cleared of trees and obstacles.
-* **Corridor Evolution:**
-  * *Stage 1 (The Trail):* A narrow 1-block dirt desire path meanders down the middle of the wide clearing.
-  * *Stage 2 (The Cart Road):* Upgraded to a 3-block wide gravel road with room for wagons to pass.
-  * *Stage 3 (The Paved Highway):* Upgraded to a 5-to-6 block wide cobblestone street with curbs, stone slabs on inclines, and roadside lanterns.
-  * *Stage 4 (The Metropolitan Avenue):* High-tier cities install dual-lane paved streets with raised sidewalks, gas lamps, and a central **Create** tramway or rail line running down the median.
-* **Cut-and-Fill Limits ($\pm 1$ to $2$ Blocks):** Roads may only shave down bumps by 1–2 blocks or fill dips by 1–2 blocks, using slabs for gentle gradients. Exceeding these limits triggers modular civil engineering:
-  * *Trestle Bridges:* Over deep gorges, ravines, and rivers.
-  * *Switchback Passes:* Zig-zagging up steep mountain slopes.
-  * *Blasted Tunnels:* Straight stone-arched tunnels punched through mountain bases, unlocked in later industrial tiers via explosives and **Create** mechanical drills.
-* **Desire Paths & Speed Modifiers:** Frequent foot traffic along the surveyed corridor wears grass into dirt paths. Paved roads confer physical movement speed bonuses to players, horses, and wagons.
+### C. Deterministic 2D Plot Grid & Multi-Lot Consolidation
+Settlements expand strictly along a discrete planar graph of discrete building lots separated by wide transit corridors:
+* **The Base Lot Unit ($16 \times 16$ Blocks):** Standard building cells occupy a $16 \times 16$ block footprint (1 chunk equivalent), separated by 7–9 block wide road corridors (default 8-block corridor, 24-block total cell pitch).
+* **Two Dimensions of Architectural Scaling:**
+  1. *Vertical Density (Footprint Stays $1 \times 1$):* Tier 1 timber cottage (2 citizens) $\rightarrow$ Tier 2 two-story stone townhouse (4–6 citizens) $\rightarrow$ Tier 3 multi-story brick tenement (8–12 citizens). Upgrading simply adds floors upward without consuming extra land.
+  2. *Multi-Lot Consolidation (Footprint Expands Contiguously):* Heavy industrial or municipal structures merge adjacent grid cells without breaking corridor alignment:
+     * *Foundries / Smelteries:* $1 \times 2$ Lots ($16 \times 32$ interior footprint).
+     * *Central Warehouses / Market Halls:* $2 \times 2$ Lots ($32 \times 32$ interior footprint).
+     * *Airship Gantries / Naval Shipyards:* $2 \times 3$ or $3 \times 3$ Lots ($48 \times 48$ interior footprint).
+* **Harmonious Palette Algorithm:** Building templates dynamically substitute materials based on local resource abundance and color harmony (birch/river cobble in valleys; sandstone/terracotta in deserts; spruce/deepslate in taigas).
 
-### D. Sprawling Agricultural Greenbelts
-Agriculture is not confined inside city walls. Sprawling crop fields and animal pastures generate outside the urban core, expanding outward across the surrounding countryside as the town’s population increases.
+### D. Geographic Placement Filters & Natural Settlement Archetypes
+World generation evaluates four strict criteria before seeding a town:
+1. *Proximity to Fresh Water:* Must be located along a downhill river, lake, or coastal ocean bay.
+2. *Foundation Flatness:* Core $3 \times 3$ starter plots must have an elevation slope delta $< 5$ blocks.
+3. *Minimum Spacing Buffer:* No two cities may spawn closer than **1,500 blocks** apart, preserving vast wild frontiers for rail corridors, trade routes, and bandit hideouts.
+4. *Resource Proximity:* Must sit within reach of arable soil, harvestable timber, or exposed stone/ore outcroppings.
+* **The Four Archetypes:**
+  * *River Confluences:* Where two rivers merge or bend; naturally evolve into major multi-tier commercial hubs.
+  * *Coastal Estuaries & Harbors:* Where navigable rivers meet deep ocean; spawns maritime ports and shipyards.
+  * *Foothill Plateaus:* Flat land at mountain bases with rich mineral beds; spawns heavy mining foundries.
+  * *Lowland Plains:* Vast flat grasslands far from mountains; spawns sprawling agricultural greenbelts.
 
-### E. Modular Grid-Edge Walls
-* **Unified Road/Wall Logic:** Walls run along the exact same grid edges as roads:
-  * *Wall Segments:* Stone masonry stacked 4–5 blocks high along a grid boundary. Every wall segment generates with an **integrated 1-to-2 block wide flat walkway on top**, protected by outer crenellations for guards to patrol.
-  * *Intersection with a Road:* Automatically generates an arched **Fortified Gatehouse** with iron-banded doors or a portcullis, complete with interior stairs connecting to the wall-top walkway.
-  * *Parallel to a Road:* Forms an intramural rampart street running along the inner wall.
-* **Demolition & Relocation:** When a city expands, old walls are de-zoned, demolished for stone, and rebuilt along the new outer grid edge.
+### E. Environmental Anchor Plots (Precision Shoreline Mechanics)
+Specialized industrial and maritime plots break strict grid alignment to snap flush to natural water terrain:
+* **The 128-Block Raycast:** Town administration searches outward from the Civic Bell up to 128 blocks for riverbank blocks with deep water ($\ge 2$ blocks) and active downhill current.
+* **Vector Normal Calculation:** The algorithm computes the shoreline angle (the tangent boundary between solid earth and flowing water).
+* **The Split-Zone Blueprint:**
+  * *Land Half (50%):* Sits on solid ground, graded flat to match the nearest street elevation using cut-and-fill rules.
+  * *Overhang Half (50%):* Extends out over open water, supported by structural wooden pier pilings sunk to the riverbed.
+* **Kinetic Orientation:** The blueprint automatically aligns the **Create** waterwheel slot parallel to the current vector, ensuring continuous forward hydro-kinetic rotation.
+* **The Spur Road:** A dedicated survey corridor branches from the nearest town street, paving a direct road connection to the facility's front door.
+* **Fallback Logic:** If no valid river exists within 128 blocks, the water project safely cancels and rolls over to a hilltop **Windmill** project instead.
 
-### F. Urban Renewal & Local Material Recycling
-* **Adaptive Prioritization:** The town administration dynamically updates a project queue based on civic deficits (e.g., housing shortages trigger cottage construction; high crime triggers guard barracks).
-* **Demolition & Upgrading:** Low-density starter shacks or farms in prime central plots can be demolished and replaced with high-density stone buildings or rail terminals.
-* **Direct Short-Circuit Scavenging:** When an old building or wall is dismantled, reclaimed materials are placed in a temporary local scrap pallet. Adjacent construction projects pull stone and timber **directly from that demolition pallet first**, eliminating unnecessary round trips to the central warehouse.
+### F. Wide Surveyed Road Corridors (7–9 Block Right-of-Way)
+* **Corridor Planar Graph:** Road corridors form 7–9 block wide reserved civil right-of-ways running between plots:
+  * *Stage 1 (The Trail):* 1-block dirt desire path meandering through cleared grass.
+  * *Stage 2 (The Cart Road):* 3-block wide gravel lane flanked by drainage shoulders for horse carts.
+  * *Stage 3 (The Paved Highway):* 5–6 block cobblestone avenue with curbs, stone slabs on inclines, and copper street lamps.
+  * *Stage 4 (The Metropolitan Avenue):* Dual-lane paved boulevard with raised sidewalks and a central **Create** tramway or rail line in the median.
+* **Cut-and-Fill Constraints ($\pm 1$ to $2$ Blocks):** Roads grade down peaks by 1–2 blocks or fill dips by 1–2 blocks using slabs and stairs for smooth vehicle motion.
+  * *Chasm Trigger ($> 3$ block vertical drop):* Automatically erects the **Trestle Bridge Module** across gorges.
+  * *Cliff Trigger ($> 3$ block rise):* Generates a **Switchback Pass** in early tiers, or bores a stone-arched **Tunnel Module** in industrial tiers.
+* **Desire Path Wear (Stigmergy):** Foot traffic and horse carts wear grass into coarse dirt and dirt paths over time. Once wear crosses a municipal threshold, Builders schedule a paving project.
 
-### G. Autonomous Vehicle Manufacturing
+### G. Sprawling Agricultural Greenbelts
+Agriculture is not confined inside city walls. Crop fields and animal pastures generate outside the urban core, expanding outward across the countryside as population increases.
+
+### H. Modular Grid-Edge Fortification Walls
+* **Unified Geometry:** Walls run along the exact same planar grid edges as roads:
+  * *Dimensions:* 2–3 blocks wide at base, 4–5 blocks tall solid stone masonry.
+  * *Parapet Walkway:* Generates with an integrated **1-to-2 block wide flat walkway on top**, flanked by outer stone crenellations for Town Watch guard patrols.
+  * *Road Intersection $\longrightarrow$ Fortified Gatehouse:* Generates an arched stone portal with iron-banded doors/portcullis and interior spiral stairs connecting to the wall walkway.
+  * *Parallel Road $\longrightarrow$ Rampart Street:* Forms an intramural service avenue for rapid troop movement.
+
+### I. Urban Renewal, Demolition & Short-Circuit Scavenging
+Cities naturally rezone, condemn, and modernize obsolete structures through an autonomous lifecycle:
+* **Condemnation Triggers:** Density upgrades (clearing starter shacks for tenements), lot consolidation (merging plots for foundries), or wall expansion (relocating perimeter fortifications).
+* **Top-Down Deconstruction:** Builders deconstruct in reverse schematic order ($\text{Interiors} \rightarrow \text{Roof} \rightarrow \text{Walls} \rightarrow \text{Foundation}$) directly depositing reclaimed materials into a temporary sidewalk **Debris Zone**.
+* **Short-Circuit Local Scavenging:** Adjacent construction projects ($\le 32$ blocks away) pull recycled stone and timber **directly from the Debris Zone first**, completely bypassing round trips to the central warehouse.
+* **Bottom-Up Assembly:** Graded foundation $\rightarrow$ structural columns $\rightarrow$ wall infill $\rightarrow$ roof trusses $\rightarrow$ interior workstations. Surplus debris is returned to central storage once local projects complete.
+
+### J. Autonomous Vehicle Manufacturing
 Settlements build their own transit vehicles at specialized assembly plots:
 * **Assembly Sites:** Cartwright Sheds (carts/wagons), Rail Roundhouses (trains), and Coastal Drydocks/Shipyards (ships).
 * **Vessel Types:**
@@ -154,7 +189,7 @@ Settlements build their own transit vehicles at specialized assembly plots:
   * *Cargo Freighters:* Flat-bottomed steam barges or sailing schooners hauling bulk goods along coastal lanes.
   * *Naval Warships:* Iron-prowed cutters equipped with **Create: Big Cannons** that patrol coastal waters to intercept pillager pirates.
 
-### H. Macro-to-Micro Simulation Handoff (The Observer Model)
+### K. Macro-to-Micro Simulation Handoff (The Observer Model)
 * **Off-Screen Logic (Pure Math):** Cities, construction projects, and trade routes do not tick in full 3D when unloaded. They update on a low-frequency data heartbeat (e.g., every 10–30 seconds) via simple arithmetic in the town ledger.
 * **The "Pre-Render Catch-Up" Sequence:** When a player crosses the simulation boundary toward a project:
   1. *Timestamp Check:* Calculates elapsed work (e.g., 40 blocks paved, 3 trees felled).
@@ -326,7 +361,7 @@ Town inventories reflect their surrounding natural environment:
 ### D. Settlement Failure & Abandoned Ruins
 * **The Open Claim Rule:** If all citizens in a town perish (via starvation, raids, or disease), the settlement loses its sovereign territory claim.
 * **No Squatter Bloat:** Pillagers do not move in as replacement citizens; the town simply becomes an overgrown, dark ruin.
-* **Free Takeover:** Any player can walk into an abandoned, unclaimed settlement, place a Charter Stone, and claim the remaining roads, workshops, and walls for free.
+* **Free Takeover:** Any player can walk into an abandoned, unclaimed settlement, place and strike a Civic Bell, and claim the remaining roads, workshops, and walls for free.
 
 ---
 
